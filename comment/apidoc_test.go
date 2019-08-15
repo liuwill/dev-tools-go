@@ -273,11 +273,33 @@ const mockContent = `[
 ]`
 
 func Test_PickTableRow(t *testing.T) {
-	tableRows := pickTableRow(mockContent)
+	tableRows := PickTableRow(mockContent)
 	count := strings.Count(mockContent, "TABLE_NAME")
 
 	if len(tableRows) != count {
 		t.Error("Test PickTableRow Fail")
 	}
 	t.Log("Test PickTableRow Success")
+}
+
+func Test_GenerateComment(t *testing.T) {
+	tableRows := PickTableRow(mockContent)
+	apiConfig := ApiConfig{
+		Method:   "get",
+		Path:     "/assistance/sku/list",
+		Name:     "获取一键补货活动配置列表",
+		Module:   "Activity",
+		Function: "listAssistSkuPage",
+		Type:     "assistSkuData",
+	}
+
+	target := GenerateComment(apiConfig, tableRows)
+	for _, row := range tableRows {
+		if !strings.Contains(target, row.ColumnName) {
+			t.Error("Test PickTableRow:ColumnName Fail", row.ColumnName)
+			break
+		}
+	}
+
+	t.Error("Test GenerateComment Success", target)
 }
