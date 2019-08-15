@@ -2,7 +2,11 @@
   [![Build Status][travis-image]][travis-url]
   [![Codecov branch][codecov-image]][codecov-url]
 
-> Build Some Tools For Development Automation
+> 🧂 Build Some Tools For Development Automation
+
+| 功能 | 代码 | 描述 |
+| --- | --- | --- |
+| 生成ApiDoc接口文档 | [apidoc](./comment/apidoc.go) | 从数据库导出information_schema.COLUMNS表json格式数据 |
 
 ## License
 
