@@ -6,3 +6,5 @@ coverage.html
 */**/.gitignore
 dist/
 */*.go_
+
+/profile.out

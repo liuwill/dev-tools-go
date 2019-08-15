@@ -277,7 +277,7 @@ func Test_PickTableRow(t *testing.T) {
 	count := strings.Count(mockContent, "TABLE_NAME")
 
 	if len(tableRows) != count {
-		t.Error("Test PickTableRow Fail")
+		t.Error("Test PickTableRow Fail", len(tableRows), count)
 	}
 	t.Log("Test PickTableRow Success")
 }
