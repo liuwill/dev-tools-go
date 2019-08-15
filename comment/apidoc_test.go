@@ -301,5 +301,5 @@ func Test_GenerateComment(t *testing.T) {
 		}
 	}
 
-	t.Error("Test GenerateComment Success", target)
+	t.Log("Test GenerateComment Success")
 }
