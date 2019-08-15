@@ -11,7 +11,7 @@ import (
  * Row From information_schema.COLUMNS
  * TABLE_CATALOG	TABLE_SCHEMA	TABLE_NAME	COLUMN_NAME	ORDINAL_POSITION	COLUMN_DEFAULT	IS_NULLABLE	DATA_TYPE	CHARACTER_MAXIMUM_LENGTH	CHARACTER_OCTET_LENGTH	NUMERIC_PRECISION	NUMERIC_SCALE	DATETIME_PRECISION	CHARACTER_SET_NAME	COLLATION_NAME	COLUMN_TYPE	COLUMN_KEY	EXTRA	PRIVILEGES	COLUMN_COMMENT
  * const toCamel = (item) => {
-   	const list = item.toLowerCase().split("_");
+   	const list = item.toLowerCase().split("_")
    	return list.reduce((result, item, index) => {
    		result += item[0].toUpperCase() + item.substr(1)
    		return result
@@ -96,6 +96,41 @@ var typeConfig = map[string]string{
 	"datetime":  "Date",
 	"tinyint":   "Number",
 	"timestamp": "Date",
+}
+
+func toBigCamelCaseWord(word string) string {
+	if len(word) <= 0 {
+		return word
+	}
+
+	word = strings.ToLower(word)
+	if word[0] < 97 || word[0] > 122 {
+		return word
+	}
+
+	firstLetter := string(word[0] - 32)
+	return firstLetter + string(word[1:])
+}
+
+func toBigCamelCase(sentence string) string {
+	words := strings.Split(sentence, "_")
+	target := make([]string, len(words))
+
+	for i, v := range words {
+		target[i] = toBigCamelCaseWord(v)
+	}
+	return strings.Join(target, "")
+}
+
+func buildColumnStructDefine(header string) string {
+	columns := strings.Split(header, "\t")
+	lines := make([]string, len(columns))
+	for i, v := range columns {
+		word := toBigCamelCase(v)
+		lines[i] = "\t" + word + " string `json:\"" + v + "\"`"
+	}
+	lineStr := strings.Join(lines, "\n")
+	return "type TableRow struct {\n" + lineStr + "\n}"
 }
 
 func PickTableRow(jsonStr string) []TableRow {

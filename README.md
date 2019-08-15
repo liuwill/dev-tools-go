@@ -2,7 +2,7 @@
   [![Build Status][travis-image]][travis-url]
   [![Codecov branch][codecov-image]][codecov-url]
 
-> 🧂 Build Some Tools For Development Automation
+> 🍰 Build Some Tools For Development Automation
 
 | 功能 | 代码 | 描述 |
 | --- | --- | --- |

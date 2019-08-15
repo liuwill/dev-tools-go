@@ -303,3 +303,31 @@ func Test_GenerateComment(t *testing.T) {
 
 	t.Log("Test GenerateComment Success")
 }
+
+func Test_BuildColumnStructDefine(t *testing.T) {
+	header := "TABLE_CATALOG	TABLE_SCHEMA	TABLE_NAME	COLUMN_NAME	ORDINAL_POSITION	COLUMN_DEFAULT	IS_NULLABLE	DATA_TYPE	CHARACTER_MAXIMUM_LENGTH	CHARACTER_OCTET_LENGTH	NUMERIC_PRECISION	NUMERIC_SCALE	DATETIME_PRECISION	CHARACTER_SET_NAME	COLLATION_NAME	COLUMN_TYPE	COLUMN_KEY	EXTRA	PRIVILEGES	COLUMN_COMMENT"
+	result := buildColumnStructDefine(header)
+	words := strings.Split(header, "\t")
+	if strings.Count(result, "json") != len(words) {
+		t.Error("Test BuildColumnStructDefine json Fail")
+	}
+	t.Log("Test BuildColumnStructDefine Success")
+}
+
+func Test_ToBigCamelCaseWord(t *testing.T) {
+	camelCase := [][]string{
+		[]string{"Table", "Table"},
+		[]string{"TABLE", "Table"},
+		[]string{"1st", "1st"},
+		[]string{"", ""},
+	}
+
+	for _, caseData := range camelCase {
+		camel := toBigCamelCaseWord(caseData[0])
+		if camel != caseData[1] {
+			t.Error("Test BuildColumnStructDefine json Fail", camel, caseData)
+		}
+	}
+
+	t.Log("Test ToBigCamelCaseWord Success")
+}
