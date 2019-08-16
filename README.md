@@ -1,6 +1,8 @@
 # Go Kata Practice
   [![Build Status][travis-image]][travis-url]
   [![Codecov branch][codecov-image]][codecov-url]
+  [![Maintainability][codeclimate-image]][codeclimate-url]
+
 
 > 🍰 Build Some Tools For Development Automation
 
@@ -16,3 +18,5 @@
 [travis-url]: https://travis-ci.org/liuwill/dev-tools-go
 [codecov-image]: https://img.shields.io/codecov/c/github/liuwill/dev-tools-go.svg?style=flat-square
 [codecov-url]: https://codecov.io/gh/liuwill/dev-tools-go
+[codeclimate-image]: https://api.codeclimate.com/v1/badges/857f2553e245996efc10/maintainability
+[codeclimate-url]: https://codeclimate.com/github/liuwill/dev-tools-go/maintainability

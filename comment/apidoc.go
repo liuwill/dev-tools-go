@@ -7,18 +7,6 @@ import (
 	"strings"
 )
 
-/*
- * Row From information_schema.COLUMNS
- * TABLE_CATALOG	TABLE_SCHEMA	TABLE_NAME	COLUMN_NAME	ORDINAL_POSITION	COLUMN_DEFAULT	IS_NULLABLE	DATA_TYPE	CHARACTER_MAXIMUM_LENGTH	CHARACTER_OCTET_LENGTH	NUMERIC_PRECISION	NUMERIC_SCALE	DATETIME_PRECISION	CHARACTER_SET_NAME	COLLATION_NAME	COLUMN_TYPE	COLUMN_KEY	EXTRA	PRIVILEGES	COLUMN_COMMENT
- * const toCamel = (item) => {
-   	const list = item.toLowerCase().split("_")
-   	return list.reduce((result, item, index) => {
-   		result += item[0].toUpperCase() + item.substr(1)
-   		return result
-   	}, "")
-   }
- * str.split("\t").map(item => `${toCamel(item)} string \`json:"${item}"\``)
-*/
 type ApiConfig struct {
 	Method   string
 	Path     string
@@ -28,6 +16,10 @@ type ApiConfig struct {
 	Type     string
 }
 
+/*
+ * Row From information_schema.COLUMNS
+ * TABLE_CATALOG	TABLE_SCHEMA	TABLE_NAME	COLUMN_NAME	ORDINAL_POSITION	COLUMN_DEFAULT	IS_NULLABLE	DATA_TYPE	CHARACTER_MAXIMUM_LENGTH	CHARACTER_OCTET_LENGTH	NUMERIC_PRECISION	NUMERIC_SCALE	DATETIME_PRECISION	CHARACTER_SET_NAME	COLLATION_NAME	COLUMN_TYPE	COLUMN_KEY	EXTRA	PRIVILEGES	COLUMN_COMMENT
+ */
 type TableRow struct {
 	TableCatalog           string `json:"TABLE_CATALOG"`
 	TableSchema            string `json:"TABLE_SCHEMA"`
