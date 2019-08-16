@@ -104,12 +104,16 @@ func toBigCamelCaseWord(word string) string {
 	return firstLetter + string(word[1:])
 }
 
-func toBigCamelCase(sentence string) string {
+func toCamelCase(sentence string, isBig bool) string {
 	words := strings.Split(sentence, "_")
 	target := make([]string, len(words))
 
 	for i, v := range words {
-		target[i] = toBigCamelCaseWord(v)
+		if i > 0 || isBig {
+			target[i] = toBigCamelCaseWord(v)
+		} else {
+			target[i] = strings.ToLower(v)
+		}
 	}
 	return strings.Join(target, "")
 }
@@ -118,7 +122,7 @@ func buildColumnStructDefine(header string) string {
 	columns := strings.Split(header, "\t")
 	lines := make([]string, len(columns))
 	for i, v := range columns {
-		word := toBigCamelCase(v)
+		word := toCamelCase(v, true)
 		lines[i] = "\t" + word + " string `json:\"" + v + "\"`"
 	}
 	lineStr := strings.Join(lines, "\n")

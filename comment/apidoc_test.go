@@ -325,9 +325,29 @@ func Test_ToBigCamelCaseWord(t *testing.T) {
 	for _, caseData := range camelCase {
 		camel := toBigCamelCaseWord(caseData[0])
 		if camel != caseData[1] {
-			t.Error("Test BuildColumnStructDefine json Fail", camel, caseData)
+			t.Error("Test ToBigCamelCaseWord json Fail", camel, caseData)
 		}
 	}
 
 	t.Log("Test ToBigCamelCaseWord Success")
+}
+
+func Test_ToCamelCase(t *testing.T) {
+	camelCase := [][]string{
+		[]string{"data_Table", "DataTable"},
+		[]string{"TABLE_test", "tableTest"},
+	}
+	bigCase := []bool{
+		true, false,
+	}
+
+	for i, caseData := range camelCase {
+		isBig := bigCase[i]
+		word := toCamelCase(caseData[0], isBig)
+		if word != caseData[1] {
+			t.Error("Test ToCamelCase Fail", word, caseData)
+		}
+	}
+
+	t.Log("Test ToCamelCase Success")
 }
