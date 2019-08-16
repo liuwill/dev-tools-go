@@ -9,12 +9,17 @@ import (
 )
 
 func Test_FetchImageContentLength(t *testing.T) {
+	errorUrl := "/error/do"
 	mockContentLength := rand.Int63()
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Test request parameters
-		// equals(t, req.URL.String(), "/some/path")
 		// Send response to be tested
-		rw.Header().Set("Content-Length", strconv.FormatInt(mockContentLength, 10))
+		if req.URL.String() == errorUrl {
+			rw.WriteHeader(http.StatusInternalServerError)
+		} else {
+			rw.Header().Set("Content-Length", strconv.FormatInt(mockContentLength, 10))
+			rw.WriteHeader(http.StatusOK)
+		}
 		// rw.Write([]byte(`OK`))
 	}))
 	// Close the server when test finishes
@@ -26,10 +31,15 @@ func Test_FetchImageContentLength(t *testing.T) {
 	}
 
 	// base := "http://www.liuwill.com"
-	imgUrl := "/resources/sku-da2afa8f-17f7-6d2d-2635-f30020b10d58.png"
+	imgUrl := "/resources/sku-da2afa8f-17f7-6d2d-2635.png"
 	contentLen, err := imageRequest.FetchImageContentLength(imgUrl)
 
 	if err != nil || contentLen != mockContentLength {
 		t.Error("Test FetchImageContentLength Fail", contentLen, mockContentLength)
+	}
+
+	_, err = imageRequest.FetchImageContentLength(errorUrl)
+	if err == nil {
+		t.Error("Test FetchImageContentLength Error")
 	}
 }
