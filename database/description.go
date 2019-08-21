@@ -27,7 +27,10 @@ const (
 		{ "column": "non_unique", "name": "是否唯一" },
 		{ "column": "cardinality", "name": "基数" }
 	]`
+	TABLE_NAME = "TABLE_NAME"
 )
+
+type TableItem map[string]interface{}
 
 type ColumnConfig struct {
 	Column   string `json:"column"`
@@ -41,8 +44,8 @@ func BuildColumnConfig(jsonStr string) []ColumnConfig {
 	return columnConfig
 }
 
-func ParseTableContent(jsonStr string) []map[string]interface{} {
-	var tableData []map[string]interface{}
+func ParseTableContent(jsonStr string) []TableItem {
+	var tableData []TableItem
 	json.Unmarshal([]byte(jsonStr), &tableData)
 	return tableData
 }
@@ -66,7 +69,7 @@ func BuildMarkedTableHeader(tableConfig []ColumnConfig) (string, string) {
 	return header, splitter
 }
 
-func FetchTableColumnValue(config ColumnConfig, rowData map[string]interface{}) string {
+func FetchTableColumnValue(config ColumnConfig, rowData TableItem) string {
 	key := strings.ToUpper(config.Column)
 	columnVal := rowData[key].(string)
 	if config.IsAnchor {
@@ -75,7 +78,7 @@ func FetchTableColumnValue(config ColumnConfig, rowData map[string]interface{}) 
 	return columnVal
 }
 
-func BuildMarkedTable(tableConfig []ColumnConfig, tableData []map[string]interface{}) []string {
+func BuildMarkedTable(tableConfig []ColumnConfig, tableData []TableItem) []string {
 	header, splitter := BuildMarkedTableHeader(tableConfig)
 	lines := make([]string, len(tableData)+2)
 
@@ -98,4 +101,21 @@ func BuildMarkedTable(tableConfig []ColumnConfig, tableData []map[string]interfa
 	}
 
 	return lines
+}
+
+func GroupRowByTable(tableData []TableItem) map[string][]TableItem {
+	groupMap := make(map[string][]TableItem)
+
+	for _, row := range tableData {
+		if tableName, ok := row[TABLE_NAME]; ok {
+			name := tableName.(string)
+			if _, ok := groupMap[name]; !ok {
+				groupMap[name] = []TableItem{}
+			}
+
+			groupMap[name] = append(groupMap[name], row)
+		}
+	}
+
+	return groupMap
 }

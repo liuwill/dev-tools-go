@@ -55,6 +55,118 @@ const schemaData = `[
     "BLOCK_FORMAT": "Original"
   }
 ]`
+const RAW_COLUMN_DATA = `[
+  {
+    "TABLE_CATALOG": "def",
+    "TABLE_SCHEMA": "calshop",
+    "TABLE_NAME": "tb_timer_task",
+    "COLUMN_NAME": "id",
+    "ORDINAL_POSITION": 1,
+    "COLUMN_DEFAULT": null,
+    "IS_NULLABLE": "NO",
+    "DATA_TYPE": "int",
+    "CHARACTER_MAXIMUM_LENGTH": null,
+    "CHARACTER_OCTET_LENGTH": null,
+    "NUMERIC_PRECISION": 10,
+    "NUMERIC_SCALE": 0,
+    "DATETIME_PRECISION": null,
+    "CHARACTER_SET_NAME": null,
+    "COLLATION_NAME": null,
+    "COLUMN_TYPE": "int(10) unsigned",
+    "COLUMN_KEY": "PRI",
+    "EXTRA": "auto_increment",
+    "PRIVILEGES": "select,insert,update,references",
+    "COLUMN_COMMENT": ""
+  },
+  {
+    "TABLE_CATALOG": "def",
+    "TABLE_SCHEMA": "calshop",
+    "TABLE_NAME": "tb_timer_task",
+    "COLUMN_NAME": "task_id",
+    "ORDINAL_POSITION": 2,
+    "COLUMN_DEFAULT": "",
+    "IS_NULLABLE": "NO",
+    "DATA_TYPE": "varchar",
+    "CHARACTER_MAXIMUM_LENGTH": 64,
+    "CHARACTER_OCTET_LENGTH": 192,
+    "NUMERIC_PRECISION": null,
+    "NUMERIC_SCALE": null,
+    "DATETIME_PRECISION": null,
+    "CHARACTER_SET_NAME": "utf8",
+    "COLLATION_NAME": "utf8_general_ci",
+    "COLUMN_TYPE": "varchar(64)",
+    "COLUMN_KEY": "MUL",
+    "EXTRA": "",
+    "PRIVILEGES": "select,insert,update,references",
+    "COLUMN_COMMENT": "定时任务id"
+  },
+  {
+    "TABLE_CATALOG": "def",
+    "TABLE_SCHEMA": "calshop",
+    "TABLE_NAME": "tb_admin",
+    "COLUMN_NAME": "id",
+    "ORDINAL_POSITION": 1,
+    "COLUMN_DEFAULT": null,
+    "IS_NULLABLE": "NO",
+    "DATA_TYPE": "int",
+    "CHARACTER_MAXIMUM_LENGTH": null,
+    "CHARACTER_OCTET_LENGTH": null,
+    "NUMERIC_PRECISION": 10,
+    "NUMERIC_SCALE": 0,
+    "DATETIME_PRECISION": null,
+    "CHARACTER_SET_NAME": null,
+    "COLLATION_NAME": null,
+    "COLUMN_TYPE": "int(10) unsigned",
+    "COLUMN_KEY": "PRI",
+    "EXTRA": "auto_increment",
+    "PRIVILEGES": "select,insert,update,references",
+    "COLUMN_COMMENT": ""
+  },
+  {
+    "TABLE_CATALOG": "def",
+    "TABLE_SCHEMA": "calshop",
+    "TABLE_NAME": "tb_admin",
+    "COLUMN_NAME": "mobile",
+    "ORDINAL_POSITION": 2,
+    "COLUMN_DEFAULT": null,
+    "IS_NULLABLE": "YES",
+    "DATA_TYPE": "varchar",
+    "CHARACTER_MAXIMUM_LENGTH": 32,
+    "CHARACTER_OCTET_LENGTH": 96,
+    "NUMERIC_PRECISION": null,
+    "NUMERIC_SCALE": null,
+    "DATETIME_PRECISION": null,
+    "CHARACTER_SET_NAME": "utf8",
+    "COLLATION_NAME": "utf8_general_ci",
+    "COLUMN_TYPE": "varchar(32)",
+    "COLUMN_KEY": "",
+    "EXTRA": "",
+    "PRIVILEGES": "select,insert,update,references",
+    "COLUMN_COMMENT": "管理员手机"
+  },
+  {
+    "TABLE_CATALOG": "def",
+    "TABLE_SCHEMA": "calshop",
+    "TABLE_NAME": "tb_admin",
+    "COLUMN_NAME": "email",
+    "ORDINAL_POSITION": 3,
+    "COLUMN_DEFAULT": null,
+    "IS_NULLABLE": "YES",
+    "DATA_TYPE": "varchar",
+    "CHARACTER_MAXIMUM_LENGTH": 512,
+    "CHARACTER_OCTET_LENGTH": 1536,
+    "NUMERIC_PRECISION": null,
+    "NUMERIC_SCALE": null,
+    "DATETIME_PRECISION": null,
+    "CHARACTER_SET_NAME": "utf8",
+    "COLLATION_NAME": "utf8_general_ci",
+    "COLUMN_TYPE": "varchar(512)",
+    "COLUMN_KEY": "",
+    "EXTRA": "",
+    "PRIVILEGES": "select,insert,update,references",
+    "COLUMN_COMMENT": "管理员邮箱"
+  }
+]`
 
 func Test_BuildColumnConfig(t *testing.T) {
 	tableRows := BuildColumnConfig(RAW_SCHEMA_CONFIG)
@@ -81,10 +193,41 @@ func Test_BuildMarkedTable(t *testing.T) {
 	tableConfig := BuildColumnConfig(RAW_SCHEMA_CONFIG)
 	tableData := ParseTableContent(schemaData)
 
+	header, splitter := BuildMarkedTableHeader(tableConfig)
+	headerList := []string{header, splitter}
+
 	markedLines := BuildMarkedTable(tableConfig, tableData)
-	if len(markedLines) != len(tableData)+2 {
+	if len(markedLines) != len(tableData)+len(headerList) {
 		t.Error("Test BuildMarkedTable Fail", len(markedLines), len(tableData))
 	}
 
+	for i, headerItem := range headerList {
+		if headerItem != markedLines[i] {
+			t.Error("Test BuildMarkedTable Header Fail", len(markedLines), len(tableData))
+		}
+	}
+
 	t.Log("Test BuildMarkedTable Success")
+}
+
+func Test_GroupRowByTable(t *testing.T) {
+	tableData := ParseTableContent(RAW_COLUMN_DATA)
+	targetMap := GroupRowByTable(tableData)
+
+	dataMeta := map[string]int{
+		"tb_admin":      3,
+		"tb_timer_task": 2,
+	}
+
+	if len(targetMap) != len(dataMeta) {
+		t.Error("Test GroupRowByTable Len Fail", len(targetMap))
+	}
+
+	for k, v := range dataMeta {
+		if len(targetMap[k]) != v {
+			t.Error("Test GroupRowByTable Fail", len(targetMap))
+		}
+	}
+
+	t.Log("Test GroupRowByTable Success")
 }
